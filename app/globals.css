@@ -1,0 +1,156 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+
+    /* Theme variables for canvas compatibility */
+    --theme-background: #ffffff;
+    --theme-surface: #ffffff;
+    --theme-text: #1f2937;
+    --theme-text-secondary: #6b7280;
+    --theme-border: #e5e7eb;
+    --theme-primary: #3b82f6;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+
+    /* Dark theme variables for canvas compatibility */
+    --theme-background: #1f2937;
+    --theme-surface: #374151;
+    --theme-text: #f9fafb;
+    --theme-text-secondary: #d1d5db;
+    --theme-border: #4b5563;
+    --theme-primary: #60a5fa;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Canvas container styles for exact positioning */
+.canvas-container {
+  position: relative;
+  overflow: auto;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Ensure components maintain their exact positions */
+.canvas-container > * {
+  position: absolute;
+}
+
+/* Fixed navigation positioning */
+.fixed-navigation {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+/* Ensure canvas components don't overlap with fixed navigation */
+.canvas-component {
+  z-index: 1;
+}
+
+/* High z-index components (modals, dropdowns, etc.) */
+.high-z-component {
+  z-index: 1001;
+}
+
+/* Responsive component positioning */
+.responsive-component {
+  position: absolute;
+  transition: all 0.3s ease;
+}
+
+/* Form builder specific styles to maintain canvas sizing */
+.form-builder {
+  box-sizing: border-box;
+}
+
+.form-builder.w-full {
+  width: 100% !important;
+}
+
+.form-builder.max-w-2xl {
+  max-width: 42rem !important;
+}
+
+/* Tablet responsive positioning */
+@media (max-width: 1024px) {
+  .responsive-component {
+    left: var(--tablet-x) !important;
+    top: var(--tablet-y) !important;
+    width: var(--tablet-width) !important;
+    height: var(--tablet-height) !important;
+  }
+}
+
+/* Mobile responsive positioning */
+@media (max-width: 640px) {
+  .responsive-component {
+    left: var(--mobile-x) !important;
+    top: var(--mobile-y) !important;
+    width: var(--mobile-width) !important;
+    height: var(--mobile-height) !important;
+  }
+}
+
+/* Desktop responsive positioning (default) */
+@media (min-width: 1025px) {
+  .responsive-component {
+    left: var(--desktop-x) !important;
+    top: var(--desktop-y) !important;
+    width: var(--desktop-width) !important;
+    height: var(--desktop-height) !important;
+  }
+}

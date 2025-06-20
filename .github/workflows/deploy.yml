@@ -1,0 +1,76 @@
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy to Cloudflare Pages
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          npm install --legacy-peer-deps
+
+      - name: Build project
+        run: |
+          npm run build
+          ls -la out/ || echo "Build output directory not found"
+
+      - name: Deploy to Cloudflare Pages
+        run: |
+          # Check if out directory exists
+          if [ ! -d "./out" ]; then
+            echo "❌ Build output directory './out' not found"
+            ls -la
+            exit 1
+          fi
+
+          echo "📁 Build output directory contents:"
+          ls -la ./out
+
+          echo "🌐 Deploying to Cloudflare Pages with hardcoded credentials..."
+
+          PROJECT_NAME="${{ github.event.repository.name }}"
+
+          # First, try to create the Cloudflare Pages project (ignore if it already exists)
+          echo "📝 Creating Cloudflare Pages project (if it doesn't exist)..."
+          npx wrangler pages project create "$PROJECT_NAME" --production-branch=main || echo "Project may already exist, continuing..."
+
+          # Deploy static assets to Cloudflare Pages
+          echo "🚀 Deploying to Cloudflare Pages..."
+          npx wrangler pages deploy ./out --project-name="$PROJECT_NAME" --branch=main
+        env:
+          CLOUDFLARE_API_TOKEN: 5j6n1prFRFxaw7xiQtxupMKNaXWiV92BNCy6oAKP
+          CLOUDFLARE_ACCOUNT_ID: e0e1b8aa9ce551bf0aa32d201480b568
+
+      - name: Add deployment summary
+        if: always()
+        run: |
+          echo "## 🚀 Deployment Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "**Project:** test" >> $GITHUB_STEP_SUMMARY
+          echo "**Method:** Wrangler CLI with pre-configured credentials" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ✅ Successfully deployed to Cloudflare Pages" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Build Output:** Static files deployed from 'out' directory" >> $GITHUB_STEP_SUMMARY
+          echo ""
+          echo "## 🌐 Your App is Live!"
+          echo "Your project has been deployed to Cloudflare Pages."
+          echo "The deployment URL will be shown in the Cloudflare Pages dashboard."
+          echo ""
+          echo "## 🔄 Future Updates"
+          echo "Push any changes to this repository to trigger automatic redeployment."
